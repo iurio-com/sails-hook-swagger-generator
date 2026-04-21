@@ -1,0 +1,3822 @@
+{
+    "security": [
+        {
+            "APIKeyHeader": []
+        },
+        {
+            "MyOAuth2": [
+                "read",
+                "write"
+            ]
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "APIKeyHeader": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key",
+                "description": "FOO"
+            },
+            "MyOAuth2": {
+                "type": "oauth2",
+                "description": "Some **detail** please",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "https://example.com/api/oauth/dialog",
+                        "tokenUrl": "https://example.com/api/oauth/token",
+                        "scopes": {
+                            "write": "modify pets in your account",
+                            "read": "read your pets"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "bottle": {
+                "description": "A bottle",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "uniqueItems": true
+                    },
+                    "names": {
+                        "type": "string",
+                        "example": "Name"
+                    }
+                }
+            },
+            "item": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/item-without-required-constraint"
+                    },
+                    {
+                        "required": [
+                            "name"
+                        ]
+                    }
+                ]
+            },
+            "item-without-required-constraint": {
+                "type": "object",
+                "description": "Sails ORM Model **Item**",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "uniqueItems": true,
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "The item's name."
+                    }
+                }
+            },
+            "pet": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/pet-without-required-constraint"
+                    },
+                    {
+                        "required": [
+                            "names"
+                        ]
+                    }
+                ]
+            },
+            "pet-without-required-constraint": {
+                "type": "object",
+                "description": "Sails ORM Model **Pet**",
+                "properties": {
+                    "petID": {
+                        "type": "integer",
+                        "format": "int64",
+                        "uniqueItems": true,
+                        "description": "Note Sails special attributes: autoIncrement",
+                        "readOnly": true
+                    },
+                    "names": {
+                        "type": "string",
+                        "example": "Pet's full name"
+                    },
+                    "owner": {
+                        "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        ]
+                    },
+                    "caredForBy": {
+                        "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        ]
+                    }
+                }
+            },
+            "user": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/user-without-required-constraint"
+                    },
+                    {
+                        "required": [
+                            "names"
+                        ]
+                    }
+                ]
+            },
+            "user-without-required-constraint": {
+                "type": "object",
+                "description": "You might write a short summary of how this **User** model works and what it represents here.\n",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "uniqueItems": true,
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    "names": {
+                        "type": "string",
+                        "example": "First Middle Last"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Just any old email"
+                    },
+                    "sex": {
+                        "type": "string",
+                        "enum": [
+                            "Male",
+                            "Female"
+                        ]
+                    },
+                    "ageLimit": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100,
+                        "minimum": 15
+                    },
+                    "advancedOptions": {
+                        "type": "object",
+                        "properties": {
+                            "useDefaults": {
+                                "example": false,
+                                "type": "boolean"
+                            },
+                            "customName": {
+                                "example": "foobar",
+                                "type": "string"
+                            }
+                        },
+                        "example": {
+                            "useDefaults": false,
+                            "customName": "foobar"
+                        }
+                    },
+                    "advancedOptionsAny": {
+                        "example": {
+                            "useDefaults": false,
+                            "customName": "foobar again"
+                        }
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "lots": {
+                                "example": "lot",
+                                "type": "string"
+                            },
+                            "data": {
+                                "example": [
+                                    3,
+                                    4,
+                                    5
+                                ],
+                                "type": "array",
+                                "items": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            },
+                            "more": {
+                                "example": [
+                                    3.3,
+                                    2.344
+                                ],
+                                "type": "array",
+                                "items": {
+                                    "type": "number",
+                                    "format": "double"
+                                }
+                            },
+                            "andMore": {
+                                "example": [
+                                    "mixed",
+                                    3,
+                                    true
+                                ],
+                                "type": "array",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "integer",
+                                            "format": "int64"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Some custom JSON data",
+                        "example": {
+                            "lots": "lot",
+                            "data": [
+                                3,
+                                4,
+                                5
+                            ],
+                            "more": [
+                                3.3,
+                                2.344
+                            ],
+                            "andMore": [
+                                "mixed",
+                                3,
+                                true
+                            ]
+                        }
+                    },
+                    "pets": {
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/pet"
+                        }
+                    },
+                    "favouritePet": {
+                        "description": "JSON dictionary representing the **pet** instance or FK when creating / updating / not populated",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/pet"
+                            }
+                        ]
+                    },
+                    "neighboursPets": {
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/pet"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Note Sails special attributes: autoCreatedAt"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Note Sails special attributes: autoUpdatedAt"
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "ModelPKParam-user": {
+                "in": "path",
+                "name": "_id",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "uniqueItems": true,
+                    "description": "Note Sails special attributes: autoIncrement"
+                },
+                "description": "The desired **User** record's primary key value"
+            },
+            "ModelPKParam-item": {
+                "in": "path",
+                "name": "_id",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "uniqueItems": true,
+                    "description": "Note Sails special attributes: autoIncrement"
+                },
+                "description": "The desired **Item** record's primary key value"
+            },
+            "ModelPKParam-pet": {
+                "in": "path",
+                "name": "_petID",
+                "required": true,
+                "schema": {
+                    "type": "integer",
+                    "format": "int64",
+                    "uniqueItems": true,
+                    "description": "Note Sails special attributes: autoIncrement",
+                    "readOnly": true
+                },
+                "description": "The desired **Pet** record's primary key value"
+            },
+            "AttributeFilterParam": {
+                "in": "query",
+                "name": "_*_",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "To filter results based on a particular attribute, specify a query parameter with the same name as the attribute defined on your model. For instance, if our `Purchase` model has an `amount` attribute, we could send `GET /purchase?amount=99.99` to return a list of $99.99 purchases."
+            },
+            "WhereQueryParam": {
+                "in": "query",
+                "name": "where",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "Instead of filtering based on a specific attribute, you may instead choose to provide a `where` parameter with the WHERE piece of a [Waterline criteria](https://sailsjs.com/documentation/concepts/models-and-orm/query-language), _encoded as a JSON string_. This allows you to take advantage of `contains`, `startsWith`, and other sub-attribute criteria modifiers for more powerful `find()` queries.\n\ne.g. `?where={\"name\":{\"contains\":\"theodore\"}}`"
+            },
+            "LimitQueryParam": {
+                "in": "query",
+                "name": "limit",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                },
+                "description": "The maximum number of records to send back (useful for pagination). Defaults to 30."
+            },
+            "SkipQueryParam": {
+                "in": "query",
+                "name": "skip",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                },
+                "description": "The number of records to skip (useful for pagination)."
+            },
+            "SortQueryParam": {
+                "in": "query",
+                "name": "sort",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "description": "The sort order. By default, returned records are sorted by primary key value in ascending order.\n\ne.g. `?sort=lastName%20ASC`"
+            }
+        },
+        "examples": {
+            "modelDummy": {
+                "summary": "A model example example",
+                "value": "dummy"
+            },
+            "dummy": {
+                "summary": "An example example",
+                "value": 3
+            },
+            "dummyA2": {
+                "summary": "Another example example",
+                "value": 4
+            }
+        }
+    },
+    "paths": {
+        "/reverse-proxy/deep-url/additional/find": {
+            "get": {
+                "summary": "An externally added path",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "A single bottle",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/bottle"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "tags": [
+                    "No Model Example"
+                ]
+            }
+        },
+        "/user": {
+            "post": {
+                "summary": "Create User (**)",
+                "description": "Create a new **User** record.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the newly created **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "JSON dictionary representing the User instance to create.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Create User (**)",
+                "description": "Create a new **User** record.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the newly created **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "JSON dictionary representing the User instance to create.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "List User (find where)",
+                "description": "_Alternate description_: Find a list of **User** records that match the specified criteria.\n",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,pets,favouritePet,neighboursPets"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **User** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/user"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/actions2": {
+            "get": {
+                "summary": "Friendly",
+                "description": "Return a user list",
+                "tags": [
+                    "Actions2 Group"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 123456,
+                            "readOnly": true
+                        },
+                        "description": "The ID of the user to look up"
+                    },
+                    {
+                        "in": "query",
+                        "name": "addExtra",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "description": "Should extra details be reported"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string",
+                                            "description": "A successful result"
+                                        },
+                                        {
+                                            "example": "Some dynamic message like this.",
+                                            "type": "string",
+                                            "description": "Alternate success"
+                                        },
+                                        {
+                                            "example": 93.45,
+                                            "type": "number",
+                                            "format": "double",
+                                            "description": "Alternate success (2)"
+                                        },
+                                        {
+                                            "example": {
+                                                "weatherPerson": "Joaquin",
+                                                "days": [
+                                                    {
+                                                        "tempCelsius": 21,
+                                                        "windSpeedMph": 392
+                                                    }
+                                                ]
+                                            },
+                                            "type": "object",
+                                            "properties": {
+                                                "weatherPerson": {
+                                                    "example": "Joaquin",
+                                                    "type": "string"
+                                                },
+                                                "days": {
+                                                    "example": [
+                                                        {
+                                                            "tempCelsius": 21,
+                                                            "windSpeedMph": 392
+                                                        }
+                                                    ],
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "tempCelsius": {
+                                                                "example": 21,
+                                                                "type": "integer",
+                                                                "format": "int64"
+                                                            },
+                                                            "windSpeedMph": {
+                                                                "example": 392,
+                                                                "type": "integer",
+                                                                "format": "int64"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "description": "Another success (partial content)"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "206": {
+                        "description": "Done/Success (partial)",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string",
+                                    "description": "Human readable result"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "number",
+                                    "default": 123,
+                                    "description": "The **123** result"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user with the specified ID was found in the database"
+                    },
+                    "500": {
+                        "description": "An unexpected error occurred"
+                    }
+                }
+            }
+        },
+        "/actions2-rb": {
+            "post": {
+                "summary": "Friendly (RB)",
+                "tags": [
+                    "Actions2 Group"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "dummyHeader",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "why-not"
+                        },
+                        "description": "A value for the request header"
+                    },
+                    {
+                        "in": "cookie",
+                        "name": "dummyCookie",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "why-not-indeed"
+                        },
+                        "description": "A cookie"
+                    },
+                    {
+                        "in": "query",
+                        "name": "verbose",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Should we provide verbose output"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful result"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userId": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "example": 123456
+                                    },
+                                    "userName": {
+                                        "type": "string",
+                                        "example": "John Smith"
+                                    },
+                                    "addExtra": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/twofind": {
+            "get": {
+                "summary": "Example only",
+                "description": "You would not usually apply the same summary/description to all actions/paths :)",
+                "tags": [
+                    "NomodelTwo"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/twoclear": {
+            "get": {
+                "summary": "Example only",
+                "description": "You would not usually apply the same summary/description to all actions/paths :)",
+                "tags": [
+                    "NomodelTwo"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "summary": "Authentication",
+                "description": "This is for authentication of any user",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "summary": "Perform Logout",
+                "description": "Logout of the application",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "Auth Mgt"
+                ],
+                "parameters": [
+                    {
+                        "name": "example-only",
+                        "description": "Username to use for logout (dummy for test)",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "description": "User's password (dummy for test)",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "logout result"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/list": {
+            "get": {
+                "summary": "/user/list",
+                "description": "Return a user list",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User List"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/list2": {
+            "get": {
+                "summary": "/user/list2",
+                "description": "Return a user list (alternate)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User List"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/upload": {
+            "get": {
+                "summary": "/user/upload",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "data",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The data"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/roles": {
+            "put": {
+                "summary": "update user roles",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (Extra)"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "roles": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "roles"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/nomodel/deep-url/more/find": {
+            "get": {
+                "summary": "/nomodel/deep-url/more/find",
+                "tags": [
+                    "No Model Example"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/nomodel/deep-url/more/clear": {
+            "get": {
+                "summary": "/nomodel/deep-url/more/clear",
+                "tags": [
+                    "No Model Example"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The requested resource"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/test/{phoneNumber}": {
+            "get": {
+                "summary": "Phone No. Logout",
+                "description": "Alternate description (of no real significance)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "operationId": "user/logout",
+                "tags": [
+                    "Auth Mgt"
+                ],
+                "parameters": [
+                    {
+                        "name": "example-only",
+                        "description": "Username to use for logout (dummy for test)",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "description": "User's password (dummy for test)",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "phoneNumber",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Route pattern variable `phoneNumber`"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "logout result"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/clients/{client_id}/user/{_id}": {
+            "delete": {
+                "summary": "Delete User (destroy)",
+                "description": "Delete the **User** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "client_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Route pattern variable `client_id`"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/item/find": {
+            "get": {
+                "summary": "List Item (**) *",
+                "description": "Find a list of **Item** records that match the specified criteria.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-where",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-where"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "where",
+                        "description": "Override **just** the 'where' parameter.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **Item** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/item"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/item/find/{_id}": {
+            "get": {
+                "summary": "Get Item (find one) *",
+                "description": "Look up the **Item** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-one",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-one"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **Item** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Response denoting **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/item/create": {
+            "get": {
+                "summary": "Create Item (**) *",
+                "description": "Create a new **Item** record.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/create",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/create"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "uniqueItems": true,
+                            "description": "Note Sails special attributes: autoIncrement"
+                        },
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "schema": {
+                            "type": "string",
+                            "example": "The item's name."
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the newly created **Item** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "field1": {
+                                        "type": "string"
+                                    },
+                                    "field2": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/update/{_id}": {
+            "get": {
+                "summary": "Update Item *",
+                "description": "Update an existing **Item** record.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/update",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/update"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "uniqueItems": true,
+                            "description": "Note Sails special attributes: autoIncrement"
+                        },
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "schema": {
+                            "type": "string",
+                            "example": "The item's name."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **Item** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/item/destroy/{_id}": {
+            "get": {
+                "summary": "Delete Item (destroy) *",
+                "description": "Delete the **Item** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/destroy",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/destroy"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **Item** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/find": {
+            "get": {
+                "summary": "List Pet (find where) *",
+                "description": "Find a list of **Pet** records that match the specified criteria.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-where",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-where"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,owner,caredForBy"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **Pet** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/pet"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/find/{_petID}": {
+            "get": {
+                "summary": "Get Pet (find one) *",
+                "description": "Look up the **Pet** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-one",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-one"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,owner,caredForBy"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **Pet** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Response denoting **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/update/{_petID}": {
+            "get": {
+                "summary": "Update Pet *",
+                "description": "Update an existing **Pet** record.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/update",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/update"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    },
+                    {
+                        "in": "query",
+                        "name": "petID",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "uniqueItems": true,
+                            "description": "Note Sails special attributes: autoIncrement",
+                            "readOnly": true
+                        },
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    {
+                        "in": "query",
+                        "name": "names",
+                        "schema": {
+                            "type": "string",
+                            "example": "Pet's full name"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "schema": {
+                            "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated",
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            ]
+                        },
+                        "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "caredForBy",
+                        "schema": {
+                            "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated",
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            ]
+                        },
+                        "description": "JSON dictionary representing the **user** instance or FK when creating / updating / not populated"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **Pet** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/destroy/{_petID}": {
+            "get": {
+                "summary": "Delete Pet (destroy) *",
+                "description": "Delete the **Pet** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/destroy",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/destroy"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **Pet** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/find": {
+            "get": {
+                "summary": "List User (find where) *",
+                "description": "_Alternate description_: Find a list of **User** records that match the specified criteria.\n\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,pets,favouritePet,neighboursPets"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **User** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/user"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/find/{_id}": {
+            "get": {
+                "summary": "Get User (find one) (A2) *",
+                "description": "**Actions2** override of blueprint action: Look up the **User** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "description": "The ID of the user to look up (actions2 version)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,pets,favouritePet,neighboursPets"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user with the specified ID was found in the database (actions2 version)"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/create": {
+            "get": {
+                "summary": "Create User (**) *",
+                "description": "Create a new **User** record.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "uniqueItems": true,
+                            "description": "Note Sails special attributes: autoIncrement"
+                        },
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    {
+                        "in": "query",
+                        "name": "names",
+                        "schema": {
+                            "type": "string",
+                            "example": "First Middle Last"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "email",
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "description": "Just any old email"
+                        },
+                        "description": "Just any old email"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sex",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Male",
+                                "Female"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "ageLimit",
+                        "schema": {
+                            "type": "number",
+                            "format": "double",
+                            "maximum": 100,
+                            "minimum": 15
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "advancedOptions",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "useDefaults": {
+                                    "example": false,
+                                    "type": "boolean"
+                                },
+                                "customName": {
+                                    "example": "foobar",
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "useDefaults": false,
+                                "customName": "foobar"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "advancedOptionsAny",
+                        "schema": {
+                            "example": {
+                                "useDefaults": false,
+                                "customName": "foobar again"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "data",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "lots": {
+                                    "example": "lot",
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "example": [
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                },
+                                "more": {
+                                    "example": [
+                                        3.3,
+                                        2.344
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number",
+                                        "format": "double"
+                                    }
+                                },
+                                "andMore": {
+                                    "example": [
+                                        "mixed",
+                                        3,
+                                        true
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "anyOf": [
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "integer",
+                                                "format": "int64"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            "description": "Some custom JSON data",
+                            "example": {
+                                "lots": "lot",
+                                "data": [
+                                    3,
+                                    4,
+                                    5
+                                ],
+                                "more": [
+                                    3.3,
+                                    2.344
+                                ],
+                                "andMore": [
+                                    "mixed",
+                                    3,
+                                    true
+                                ]
+                            }
+                        },
+                        "description": "Some custom JSON data"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pets",
+                        "schema": {
+                            "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/pet"
+                            }
+                        },
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "favouritePet",
+                        "schema": {
+                            "description": "JSON dictionary representing the **pet** instance or FK when creating / updating / not populated",
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            ]
+                        },
+                        "description": "JSON dictionary representing the **pet** instance or FK when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "neighboursPets",
+                        "schema": {
+                            "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/pet"
+                            }
+                        },
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "createdAt",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Note Sails special attributes: autoCreatedAt"
+                        },
+                        "description": "Note Sails special attributes: autoCreatedAt"
+                    },
+                    {
+                        "in": "query",
+                        "name": "updatedAt",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Note Sails special attributes: autoUpdatedAt"
+                        },
+                        "description": "Note Sails special attributes: autoUpdatedAt"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the newly created **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/update/{_id}": {
+            "get": {
+                "summary": "Update User *",
+                "description": "Update an existing **User** record.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "uniqueItems": true,
+                            "description": "Note Sails special attributes: autoIncrement"
+                        },
+                        "description": "Note Sails special attributes: autoIncrement"
+                    },
+                    {
+                        "in": "query",
+                        "name": "names",
+                        "schema": {
+                            "type": "string",
+                            "example": "First Middle Last"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "email",
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "description": "Just any old email"
+                        },
+                        "description": "Just any old email"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sex",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Male",
+                                "Female"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "ageLimit",
+                        "schema": {
+                            "type": "number",
+                            "format": "double",
+                            "maximum": 100,
+                            "minimum": 15
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "advancedOptions",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "useDefaults": {
+                                    "example": false,
+                                    "type": "boolean"
+                                },
+                                "customName": {
+                                    "example": "foobar",
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "useDefaults": false,
+                                "customName": "foobar"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "advancedOptionsAny",
+                        "schema": {
+                            "example": {
+                                "useDefaults": false,
+                                "customName": "foobar again"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "data",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "lots": {
+                                    "example": "lot",
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "example": [
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                },
+                                "more": {
+                                    "example": [
+                                        3.3,
+                                        2.344
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number",
+                                        "format": "double"
+                                    }
+                                },
+                                "andMore": {
+                                    "example": [
+                                        "mixed",
+                                        3,
+                                        true
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "anyOf": [
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "integer",
+                                                "format": "int64"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            "description": "Some custom JSON data",
+                            "example": {
+                                "lots": "lot",
+                                "data": [
+                                    3,
+                                    4,
+                                    5
+                                ],
+                                "more": [
+                                    3.3,
+                                    2.344
+                                ],
+                                "andMore": [
+                                    "mixed",
+                                    3,
+                                    true
+                                ]
+                            }
+                        },
+                        "description": "Some custom JSON data"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pets",
+                        "schema": {
+                            "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/pet"
+                            }
+                        },
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "favouritePet",
+                        "schema": {
+                            "description": "JSON dictionary representing the **pet** instance or FK when creating / updating / not populated",
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            ]
+                        },
+                        "description": "JSON dictionary representing the **pet** instance or FK when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "neighboursPets",
+                        "schema": {
+                            "description": "Array of **pet**'s or array of FK's when creating / updating / not populated",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/pet"
+                            }
+                        },
+                        "description": "Array of **pet**'s or array of FK's when creating / updating / not populated"
+                    },
+                    {
+                        "in": "query",
+                        "name": "createdAt",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Note Sails special attributes: autoCreatedAt"
+                        },
+                        "description": "Note Sails special attributes: autoCreatedAt"
+                    },
+                    {
+                        "in": "query",
+                        "name": "updatedAt",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Note Sails special attributes: autoUpdatedAt"
+                        },
+                        "description": "Note Sails special attributes: autoUpdatedAt"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/destroy/{_id}": {
+            "get": {
+                "summary": "Delete User (destroy) *",
+                "description": "Delete the **User** record with the specified ID.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}/{association}/add/{childid}": {
+            "get": {
+                "summary": "Add to for User *",
+                "description": "Add a foreign record to one of this **User** record's collections.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "in": "path",
+                        "name": "childid",
+                        "required": true,
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                },
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        "description": "The desired target association record's foreign key value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot perform add to, **User** record OR **FK record** with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}/{association}/replace": {
+            "get": {
+                "summary": "Replace for User *",
+                "description": "Replace all of the child records in one of this **User** record's associations.\n\nOnly one of the query parameters, that matches the **association** path parameter, should be specified.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pets",
+                        "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number",
+                                "format": "double",
+                                "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                "uniqueItems": true,
+                                "readOnly": true
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "neighboursPets",
+                        "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number",
+                                "format": "double",
+                                "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                "uniqueItems": true,
+                                "readOnly": true
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot replace, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}/{association}/remove/{childid}": {
+            "get": {
+                "summary": "Remove from for User *",
+                "description": "Remove a foreign record from one of this **User** record's collections.\n\n(\\*) Note that this is a [Sails blueprint shortcut route](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes#?shortcut-blueprint-routes) (recommended for **development-mode only**)",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "in": "path",
+                        "name": "childid",
+                        "required": true,
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                },
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        "description": "The desired target association record's foreign key value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot perform remove from, **User** record OR **FK record** with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/item": {
+            "get": {
+                "summary": "List Item (**)",
+                "description": "Find a list of **Item** records that match the specified criteria.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-where",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-where"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "where",
+                        "description": "Override **just** the 'where' parameter.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **Item** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/item"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Item (**)",
+                "description": "Create a new **Item** record.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/create",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/create"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the newly created **Item** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "field1": {
+                                        "type": "string"
+                                    },
+                                    "field2": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/{_id}": {
+            "get": {
+                "summary": "Get Item (find one)",
+                "description": "Look up the **Item** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-one",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-one"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **Item** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Response denoting **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update Item",
+                "description": "Update an existing **Item** record.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/update",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/update"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **Item** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "JSON dictionary representing the Item instance to update.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/item-without-required-constraint"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Item (destroy)",
+                "description": "Delete the **Item** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/destroy",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/destroy"
+                },
+                "tags": [
+                    "Item"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-item"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **Item** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/item"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **Item** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet": {
+            "get": {
+                "summary": "List Pet (find where)",
+                "description": "Find a list of **Pet** records that match the specified criteria.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-where",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-where"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/AttributeFilterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,owner,caredForBy"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a paged list of **Pet** records that match the specified criteria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/pet"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/{_petID}": {
+            "get": {
+                "summary": "Get Pet (find one)",
+                "description": "Look up the **Pet** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/find-one",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/find-one"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,owner,caredForBy"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **Pet** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Response denoting **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update Pet",
+                "description": "Update an existing **Pet** record.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/update",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/update"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **Pet** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "JSON dictionary representing the Pet instance to update.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/pet-without-required-constraint"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Pet (destroy)",
+                "description": "Delete the **Pet** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/destroy",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/destroy"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **Pet** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/pet"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/pet/{_petID}/{association}": {
+            "get": {
+                "summary": "Populate association for Pet",
+                "description": "Populate and return foreign record(s) for the given association of this **Pet** record.",
+                "externalDocs": {
+                    "url": "https://sailsjs.com/documentation/reference/blueprint-api/populate-where",
+                    "description": "See https://sailsjs.com/documentation/reference/blueprint-api/populate-where"
+                },
+                "tags": [
+                    "Pet"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-pet"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "owner",
+                                "caredForBy"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "petID,names,owner,caredForBy"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the list of associated records as JSON dictionaries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/user"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot populate, **Pet** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}": {
+            "get": {
+                "summary": "Get User (find one) (A2)",
+                "description": "**Actions2** override of blueprint action: Look up the **User** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "description": "The ID of the user to look up (actions2 version)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "populate",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "false,pets,favouritePet,neighboursPets"
+                        },
+                        "description": "If specified, overide the default automatic population process. Accepts a comma-separated list of attribute names for which to populate record values, or specify `false` to have no attributes populated."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a single **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user with the specified ID was found in the database (actions2 version)"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update User",
+                "description": "Update an existing **User** record.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation errors; details in JSON response"
+                    },
+                    "404": {
+                        "description": "Cannot update, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "JSON dictionary representing the User instance to update.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user-without-required-constraint"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete User (destroy)",
+                "description": "Delete the **User** record with the specified ID.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with a JSON dictionary representing the destroyed **User** instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot destroy, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}/{association}/{childid}": {
+            "put": {
+                "summary": "Add to for User",
+                "description": "Add a foreign record to one of this **User** record's collections.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "in": "path",
+                        "name": "childid",
+                        "required": true,
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                },
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        "description": "The desired target association record's foreign key value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot perform add to, **User** record OR **FK record** with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove from for User",
+                "description": "Remove a foreign record from one of this **User** record's collections.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "in": "path",
+                        "name": "childid",
+                        "required": true,
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                },
+                                {
+                                    "type": "number",
+                                    "format": "double",
+                                    "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                    "uniqueItems": true,
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        "description": "The desired target association record's foreign key value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot perform remove from, **User** record OR **FK record** with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/user/{_id}/{association}": {
+            "put": {
+                "summary": "Replace for User",
+                "description": "Replace all of the child records in one of this **User** record's associations.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the newly updated **User** record as a JSON dictionary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot replace, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "requestBody": {
+                    "description": "The primary key values (usually IDs) of the child records to use as the new members of this collection",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "type": "number",
+                                            "format": "double",
+                                            "description": "**User** record's foreign key values to use as the replacement for this collection (**pets** association)",
+                                            "uniqueItems": true,
+                                            "readOnly": true
+                                        },
+                                        {
+                                            "type": "number",
+                                            "format": "double",
+                                            "description": "**User** record's foreign key values to use as the replacement for this collection (**neighboursPets** association)",
+                                            "uniqueItems": true,
+                                            "readOnly": true
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Populate association for User",
+                "description": "Populate and return foreign record(s) for the given association of this **User** record.",
+                "externalDocs": {
+                    "url": "https://somewhere.com/yep",
+                    "description": "Refer to these docs for more info"
+                },
+                "tags": [
+                    "User (ORM duplicate)",
+                    "User (ORM)"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/ModelPKParam-user"
+                    },
+                    {
+                        "in": "path",
+                        "name": "association",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pets",
+                                "favouritePet",
+                                "neighboursPets"
+                            ]
+                        },
+                        "description": "The name of the association"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WhereQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/LimitQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SkipQueryParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SortQueryParam"
+                    },
+                    {
+                        "in": "query",
+                        "name": "select",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to include in the result, specified as a comma-delimited list. By default, all attributes are selected. Not valid for plural (“collection”) association attributes."
+                    },
+                    {
+                        "in": "query",
+                        "name": "omit",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,names,email,sex,ageLimit,advancedOptions,advancedOptionsAny,data,pets,favouritePet,neighboursPets,createdAt,updatedAt"
+                        },
+                        "description": "The attributes to exclude from the result, specified as a comma-delimited list. Cannot be used in conjuction with `select`. Not valid for plural (“collection”) association attributes."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responds with the list of associated records as JSON dictionaries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/pet"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot populate, **User** record with specified ID **NOT** found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Json",
+        "description": "This is a generated swagger json for your sails project",
+        "termsOfService": "http://example.com/terms",
+        "contact": {
+            "name": "Theophilus Omoregbee",
+            "url": "http://github.com/theo4u",
+            "email": "theo4u@ymail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:1337/"
+        }
+    ],
+    "externalDocs": {
+        "url": "https://theoomoregbee.github.io/"
+    },
+    "tags": [
+        {
+            "name": "User (ORM duplicate)",
+            "externalDocs": {
+                "url": "https://somewhere.com/alternate",
+                "description": "Refer to these alternate docs"
+            }
+        },
+        {
+            "name": "User (ORM)",
+            "description": "A longer, multi-paragraph description\nexplaining how this all works.\n\nIt is linked to more information.\n",
+            "externalDocs": {
+                "url": "https://somewhere.com/yep",
+                "description": "Refer to these docs"
+            }
+        },
+        {
+            "name": "User List",
+            "description": "Group just for user list operation"
+        },
+        {
+            "name": "Actions2 Group",
+            "description": "A test actions2 group"
+        },
+        {
+            "name": "Auth Mgt",
+            "description": "User management and login"
+        },
+        {
+            "name": "Item",
+            "description": "Sails blueprint actions for the **Item** model"
+        },
+        {
+            "name": "Pet",
+            "description": "Sails blueprint actions for the **Pet** model"
+        },
+        {
+            "name": "User",
+            "description": "You might write a short summary of how this **User** model works and what it represents here.\n"
+        },
+        {
+            "name": "No Model Example"
+        },
+        {
+            "name": "NomodelTwo"
+        },
+        {
+            "name": "User (Extra)"
+        }
+    ]
+}
