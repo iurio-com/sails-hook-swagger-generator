@@ -21,6 +21,8 @@ describe('Basic tests ::', function () {
     // Hook will timeout in 10 seconds
     this.timeout(11000);
 
+    process.env.PORT = String(15000 + (process.pid % 10000));
+
     // Attempt to lift sails
     Sails().lift({
       blueprints: {

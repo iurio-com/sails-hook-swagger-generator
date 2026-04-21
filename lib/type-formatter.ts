@@ -1,8 +1,6 @@
 import { BlueprintActionTemplates, Modifiers, Action2Response, Defaults } from './interfaces';
 import { OpenApi } from '../types/openapi';
 import { Reference } from 'swagger-schema-official';
-
-/* eslint-disable @typescript-eslint/camelcase */
 /**
  * Created by theophy on 02/08/2017.
  *

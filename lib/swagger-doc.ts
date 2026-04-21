@@ -125,7 +125,8 @@ export default async (sails: Sails.Sails, sailsRoutes: Array<Sails.Route>, conte
     try {
       fs.writeFileSync(destPath, JSON.stringify(specifications, null, 2));
     } catch (e) {
-      sails.log.error(`ERROR: sails-hook-swagger-generator: Error writing ${destPath}: ${e.message}`, e);
+      const message = e instanceof Error ? e.message : '';
+      sails.log.error(`ERROR: sails-hook-swagger-generator: Error writing ${destPath}: ${message}`, e);
     }
   }
 

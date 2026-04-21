@@ -17,8 +17,7 @@
     "dev": "nodemon -e ts --ignore '**/*.js' --exec \"npm run test\"",
     "pretest": "npm run lint && npm run build",
     "test": "node ./node_modules/mocha/bin/mocha build/test/bootstrap.test.js build/test/**/*.test.js",
-    "travis-deploy-once": "travis-deploy-once",
-    "semantic-release": "semantic-release"
+    "semantic-release": "npx semantic-release"
   },
   "keywords": [
     "sails",
@@ -34,27 +33,30 @@
     "@types/chai": "^4.2.9",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^7.0.1",
-    "@types/node": "^13.7.4",
+    "@types/node": "^24.9.1",
     "@types/swagger-jsdoc": "^3.0.2",
     "@types/swagger-schema-official": "^2.0.20",
-    "@typescript-eslint/eslint-plugin": "^2.19.2",
-    "@typescript-eslint/parser": "^2.19.2",
+    "@typescript-eslint/eslint-plugin": "^8.59.0",
+    "@typescript-eslint/parser": "^8.59.0",
     "chai": "^4.1.1",
-    "eslint": "^6.8.0",
-    "mocha": "^3.5.0",
+    "eslint": "^8.57.1",
+    "mocha": "^11.7.5",
     "sails": "^1.2.4",
-    "sails-disk": "^1.1.2",
-    "sails-hook-orm": "^2.1.1",
-    "semantic-release": "^17.0.7",
-    "travis-deploy-once": "^4.3.4",
+    "sails-disk": "^2.1.2",
+    "sails-hook-orm": "^4.0.3",
     "tslib": "^1.10.0",
-    "typescript": "^3.8.2"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "include-all": "^4.0.3",
     "lodash": "^4.17.4",
-    "nodemon": "^2.0.2",
-    "request": "^2.88.2",
-    "swagger-jsdoc": "^4.0.0"
+    "nodemon": "^3.1.10",
+    "swagger-jsdoc": "^6.2.8"
+  },
+  "overrides": {
+    "brace-expansion": "^5.0.5",
+    "diff": "^8.0.3",
+    "picomatch": "^4.0.4",
+    "serialize-javascript": "^7.0.5"
   }
 }

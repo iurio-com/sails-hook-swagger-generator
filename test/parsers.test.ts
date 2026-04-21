@@ -117,7 +117,6 @@ describe ('Parsers', () => {
             }
           },
           {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             path: /^\/app\/.*$/,
             target: '[Function]',
             verb: 'get',

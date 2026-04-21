@@ -551,7 +551,8 @@ export const parseModelsJsDoc = async (sails: Sails.Sails, models: NameKeyMap<Sw
         }
 
       } catch (err) {
-        sails.log.error(`ERROR: sails-hook-swagger-generator: Error resolving/loading model ${model.globalId}: ${err.message || ''}` /* , err */);
+        const message = err instanceof Error ? err.message : '';
+        sails.log.error(`ERROR: sails-hook-swagger-generator: Error resolving/loading model ${model.globalId}: ${message}` /* , err */);
       }
     })
   );
@@ -609,11 +610,11 @@ export const parseControllerJsDoc = async (sails: Sails.Sails, controllers: Swag
         });
 
       } catch (err) {
-        sails.log.error(`ERROR: sails-hook-swagger-generator: Error resolving/loading controller ${controller.globalId}: ${err.message || ''}` /* , err */);
+        const message = err instanceof Error ? err.message : '';
+        sails.log.error(`ERROR: sails-hook-swagger-generator: Error resolving/loading controller ${controller.globalId}: ${message}` /* , err */);
       }
     })
   );
 
   return ret;
 }
-
